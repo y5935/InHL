@@ -56,7 +56,7 @@ public class CustomerReport {
 				 * free to use the currency_format formatter to generate a
 				 * "currency string" for the balance.
 				 ***/
-				System.out.println(account_type + ": current balance is гд"
+				System.out.println(account_type + ": current balance is я┐е"
 						+ account.getBalance());
 
 			}

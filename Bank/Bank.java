@@ -1,17 +1,17 @@
-package banking8;
+//package banking8;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * ´ú±íÒøĞĞ¶ÔÏó
+ * ä»£è¡¨é“¶è¡Œå¯¹è±¡
  * @author Think Pad
  *
  */
 public class Bank {
 	
-	//µ±Ç° Bank ÖĞÓĞ¶à¸ö Cutomer
+	//å½“å‰ Bank ä¸­æœ‰å¤šä¸ª Cutomer
 	private List<Customer> customers; 
 	
 	private Bank() {
@@ -25,19 +25,19 @@ public class Bank {
 	}
 	
 	/**
-	 * ¸ù¾İ´«ÈëµÄ²ÎÊı´´½¨Ò»¸öĞÂµÄ Cusotmer ¶ÔÏó, ²¢°Ñ¸Ã¶ÔÏó¸³¸ø customers ÖĞÖ¸¶¨µÄÔªËØ
+	 * æ ¹æ®ä¼ å…¥çš„å‚æ•°åˆ›å»ºä¸€ä¸ªæ–°çš„ Cusotmer å¯¹è±¡, å¹¶æŠŠè¯¥å¯¹è±¡èµ‹ç»™ customers ä¸­æŒ‡å®šçš„å…ƒç´ 
 	 * @param firstName
 	 * @param lastName
 	 */
 	public void addCustomer(String firstName, String lastName){
-		//1.¸ù¾İ´«ÈëµÄ²ÎÊı´´½¨Ò»¸öĞÂµÄ Cusotmer ¶ÔÏó
+		//1.æ ¹æ®ä¼ å…¥çš„å‚æ•°åˆ›å»ºä¸€ä¸ªæ–°çš„ Cusotmer å¯¹è±¡
 		Customer cust = new Customer(firstName, lastName);
 		
 		customers.add(cust);
 	}
 	
 	/**
-	 * ·µ»Ø ±íÊ¾ customers ±äÁ¿ÖĞÓĞ¶àÉÙ¸öÕæÕıµÄ Customer ¶ÔÏóµÄÕûÊı 
+	 * è¿”å› è¡¨ç¤º customers å˜é‡ä¸­æœ‰å¤šå°‘ä¸ªçœŸæ­£çš„ Customer å¯¹è±¡çš„æ•´æ•° 
 	 * @return
 	 */
 	public int getNumOfCustomers(){
@@ -45,7 +45,7 @@ public class Bank {
 	}
 	
 	/**
-	 * ·µ»ØÖ¸¶¨Ë÷Òı¶ÔÓ¦µÄ Customer ¶ÔÏó
+	 * è¿”å›æŒ‡å®šç´¢å¼•å¯¹åº”çš„ Customer å¯¹è±¡
 	 * @param index
 	 * @return
 	 */

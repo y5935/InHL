@@ -13,9 +13,9 @@ public class Account {
 	}
 	
 	/**
-	 * ´æÇ®·½·¨
-	 * @param amt: ´æ¿îµÄÇ®Êı
-	 * @return: ·µ»Ø´æ¿îÊÇ·ñ³É¹¦
+	 * å­˜é’±æ–¹æ³•
+	 * @param amt: å­˜æ¬¾çš„é’±æ•°
+	 * @return: è¿”å›å­˜æ¬¾æ˜¯å¦æˆåŠŸ
 	 */
 	public boolean deposit(double amt){
 		this.balance += amt;
@@ -25,12 +25,12 @@ public class Account {
 	/**
 	 * 
 	 * @param amt
-	 * @throws OverdraftException: µ±Óà¶î²»×ãÊ±£¬Å×³ö¸ÃÒì³£. 
+	 * @throws OverdraftException: å½“ä½™é¢ä¸è¶³æ—¶ï¼ŒæŠ›å‡ºè¯¥å¼‚å¸¸. 
 	 */
 	public void withdraw(double amt) {
 
 		if(amt > balance){
-			throw new OverdraftException("×Ê½ğ²»×ã", amt - balance);
+			throw new OverdraftException("èµ„é‡‘ä¸è¶³", amt - balance);
 		}
 		
 		this.balance -= amt;

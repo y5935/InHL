@@ -2,7 +2,7 @@ package banking8;
 
 public class SavingAccount extends Account{
 
-	//ÀûÂÊ
+	//åˆ©ç‡
 	private double interestRate;
 	
 	public SavingAccount(double init_balance, double interestRate) {

@@ -2,7 +2,7 @@ package banking8;
 
 public class CheckingAccount extends Account{
 
-	//表示透支保护
+	//琛ㄧず閫忔敮淇濇姢
 	private Double overdraftProtection;
 	
 	public CheckingAccount(double init_balance) {

@@ -7,7 +7,7 @@ public class OverdraftException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	//³à×Ö
+	//èµ¤å­—
 	private double deficit;
 	
 	public double getDeficit() {
