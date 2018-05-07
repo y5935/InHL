@@ -1,0 +1,34 @@
+$(function(){
+		// 数据
+		var treeData=[{
+			text:"根",
+			children:[{
+				text:"班级信息管理",
+				attributes:{
+					url:"gradeInfoManage.jsp"
+				}
+			},{
+				text:"学生信息管理",
+				attributes:{
+					url:"studentInfoManage.jsp"
+				}
+			}]
+		}];
+		
+		// 实例化树菜单
+		$("#tree").tree({
+			data:treeData,
+			lines:true,
+			onClick:function(node){
+				if(node.attributes){
+					openTab(node.text,node.attributes.url);
+				}
+			}
+		});
+
+
+
+<div region="west" style="width: 150px;" title="导航菜单" split="true">
+		<ul id="tree"></ul>
+	</div>
+
