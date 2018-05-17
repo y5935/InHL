@@ -1,0 +1,136 @@
+JDBC
+	1、什么是JDBC
+		1）、概念
+			Java Data Base Connective的缩写。可以成为Java的数据库连接器 
+			JDBC是开发者模仿微软的ODBC开发的一套用于数据库操作的API.
+			
+		2）、说明
+			JDBC包含两套API
+				①：开发者使用的API---- sun公司提供的。直接可以使用
+				②：数据库厂商提供的API----数据库驱动程序(jar包)，需要手动添加一下
+				
+			注：jar包---所谓jar包其实就是一个压缩文件。文件的扩展名为.jar。jar包中包含了
+			       一组编译后的.class文件。
+			       
+			      驱动程序 --- 驱动程序是由sun公司提供了一套接口，然后各数据库厂商根据接口编写的一组API
+			       
+		3）、创建项目			       
+			①、创建一个Java Project
+			②、在项目下创建一个名为lib的文件夹
+			③、复制数据库驱动到lib下
+			④、引用驱动程序
+				步骤一：选择驱动程序后鼠标右击----选择build path
+				步骤二：选择add build path
+	2、常用工具类
+		1）、DriverManager
+			a、作用
+				根据驱动类获取适合Connection对象
+			b、方法
+				getConnection(url,user,password)	: 获取一个数据库连接对象
+				
+				url :数据库连接字符串，格式为：
+					jdbc：数据库厂商协议
+					
+					oracle ----  jabc：oracle：thin：主机地址：端口号：数据库名
+								   如：String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+								   
+					mysql  ----  jdbc：mysql//主机地址：端口号/数据库名称
+								
+			c、注意事项
+				jdbc4后Class.forName()可以省略，但是不建议省略。不是所有的数据库驱动都可以省略
+				
+		2）、Connection				
+			a、作用
+				Connection是数据库和应用程序之间的桥梁。命令的执行和结果的传递都需要通过connection对象进行。
+				
+			b、方法
+				createStatement()					：获取一个Statement对象
+				preparedStatement()					：获取一个preparedStatement对象
+				close()								：释放资源对象
+				
+							
+		3）、Statement
+			a、作用
+				Statement对应用于执行静态的Sql语句。
+			b、SQL语句
+				查询语句：select
+				非查询语句：insert、delete及update
+				
+			c、方法
+				close()								：释放资源对象
+				executeUpdate()						：执行非查询 语句，执行后返回受影响行数
+				executeQuery()						：执行查询语句，返回一个单一的ResultSet对象
+				
+		4）、ResuletSet
+			a、作用
+				返回查询结果集中的一个实体。
+				
+			b、方法
+				close()								：释放资源
+				next()								：将光标向下移动一行
+				getXxxx()							：获取指定列的数据值并转为特定的数据类型（可以使用列索引或列名）
+				
+			c、注意
+				ResultSet在读取数据过程中，连接对象不能关闭
+							
+				
+	3、编码规范
+		1)、需要为每一个数据库连接对象释放资源(调用close()方法)
+		2)、释放的范围按照ResuletSet、Statement、Connection的顺序进行
+		3)、释放过程中需要调用if语句判断是否为null
+		4)、为每一个释放代码提供独立的try-catch语句
+		
+	4、使用properties配置文件
+		1)、问题
+			数据库连接字符串都是硬编码方式写入到java到代码中。密码更改时需要修改代码
+		2)、解决方案
+			使用配置文件：
+				.ini
+				.xml
+				.properties
+				自定义格式的配置文件
+		3)、使用配置文件存储数据库连接字符串
+		
+		4)、优点
+			简单、方便				
+	
+	5、Sql注入(注入攻击)
+		1)、代码漏洞
+			账号输入：a' or 1=1 --；密码随便输入
+			或	a' and ' --
+		2)、原因
+			代码执行后：select * from sys_users where userAccount='a or 1=1 --' and pwd='a'
+			密码验证部分被注释掉了
+		3)、解决方案
+			a、通过代码过滤问题语句
+			b、PreparedStatement
+		4)、PreparedStatement
+			a、概述
+				PreparedStatement是Statement的子接口，PreparedStatement中存储了Sql语句的模板。
+				PreparedStatement中存储的语句是预编译的Sql语句，以后执行时不再需要重新编译。				
+				
+			b、优势
+				①、语句模板可以被重复执行
+				②、执行效率高
+			
+			c、PreparedStatement和Statement
+				①、Statement需要对Sql语句进行拼接，代码可读性差；PreparetedStatement存储了Sql语句的模板，代码可读性高
+				②、Statement的语句执行时需要经过语法检查、编译优化过程，所以效率偏低；PreparetedStatement存储的语句模板
+				       已经语法检查和编译优化过程，执行时只需要对语句进行直接执行。所以效率较高
+				③、Statement可能会出现Sql语句注入，安全性较低；PreparedStatement可以有效避免Sql注入，安全性较高
+				       
+			d、？
+				？可以理解为模板的占位符。在执行时会将具体参数替换到模板位置	
+			e、优点
+				具有更高的安全性，可以有效避免Sql语句注入
+			f、方法
+				setXxxx(索引，参数值)	：为指定的参数赋值			       
+				       
+			
+			
+						
+			
+			
+			
+	
+	
