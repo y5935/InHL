@@ -1,0 +1,9 @@
+数组与集合区别：动态大小
+
+ArrayList与LinkList的效率对比：
+
+   添加：LinkList 效率高
+   删除:
+        ArrayList删除数据：删除前面的数据效率低，删除后边的数据效率高；
+        LinkList 删除数据：删除前面的和后边的效率高，越往中间走效率越低；
+   获取和设置：ArrayList 效率高的多
