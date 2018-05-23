@@ -1,0 +1,177 @@
+java实现在线支付-支付宝
+国内电子商务系统实现的基本流程如下：
+客户在系统内下订单 -> 系统根据订单生成支付宝接口url -> 客户通过url使用支付宝（网上银行）付款 -> 支付宝将客户的付款完成信息发送给电子商务系统 -> 系统收到支付宝信息后确定客户订单已经付款 -> 进行发货等后续流程。
+
+在开始下面的内容之前,你要先有一个支付宝账户,如果要集成支付宝接口,你还必须申请开通服务(关于如何开通,可以直接到支付宝网站上申请).在服务开通后,支付宝会给你2个字符串编号:1个partnerId(合作伙伴ID),还有1个securityCode(安全码).当你拿到这2个码的时候就可以开始下面的内容了.
+（1）如何调用支付宝接口？（将客户的订单信息按照既定的规则生成一个url跳转到支付宝网站）
+
+/**   
+     * 根据订单生成支付宝接口URL.   
+     * @param httpRequest   
+     * @param order 订单实例   
+     * @return   
+     * @throws Exception   
+     */    
+    public static String makeOrderAlipayUrl(HttpServletRequest httpRequest,Order order) throws Exception {     
+        HashMap hm = new HashMap();     
+        hm.put("_input_charset",httpRequest.getCharacterEncoding());//采用相同的编码方式     
+        hm.put("body","您在www.xxx.com上的订单");//填写在跳到支付宝页面上显示的付款内容信息     
+        hm.put("discount","-5");//填写折扣信息 -5表示抵扣5元     
+        hm.put("logistics_fee","10");//物流费用     
+        hm.put("logistics_payment","BUYER_PAY");//物流费用支付人 BUYER_PAY=买家支付物流费用     
+        hm.put("logistics_type","EXPRESS");//物流方式     
+        hm.put("notify_url","http://www.xxx.com/notifyurl.jsp");//客户付款后,支付宝调用的页面     
+        hm.put("out_trade_no",order.getId());//外部交易号,最好具有唯一性,在获取支付宝发来的付款信息时使用.     
+        hm.put("partner",partnerId);//partnerId(合作伙伴ID)     
+        hm.put("agent",partnerId);//partnerId(合作伙伴ID)     
+        hm.put("payment_type","1");//支付类型 1=商品购买,2=服务购买,...     
+        hm.put("price","105.30");//订单金额信息     
+        hm.put("quantity","1");//订单商品数量,一般都是写1,它是按照整个订单包来计算     
+        hm.put("return_url","http://www.xxx.com/ReturnUrl.jsp");//客户付款成功后,显示给客户的页面     
+        hm.put("seller_email","alipay@xxx.com");//你的支付宝账户email     
+        hm.put("service","create_direct_pay_by_user");//create_direct_pay_by_user=直接付款,trade_create_by_buyer 担保付款      
+        hm.put("subject","www.xxx.com的订单");//填写在跳到支付宝页面上显示的付款标题信息     
+        String payGateway = "https://www.alipay.com/cooperate/gateway.do?";//跳转到支付宝的url头     
+        return makeUrl(hm,securityCode,httpRequest.getCharacterEncoding(),payGateway);//securityCode(安全码)      
+    }     
+    /**   
+     * 根据传入的参数生成alipay的支付URL   
+     * @param hm 参数值   
+     * @param securityCode 安全码   
+     * @param charset 编码   
+     * @param payGateway 支付宝gateway   
+     * @return   
+     */    
+    public static String makeUrl(HashMap hm,String securityCode,String charset,String payGateway) throws Exception{     
+        List keys = new ArrayList(hm.keySet());     
+        Collections.sort(keys);//支付宝要求参数必须按字母排序     
+        StringBuffer content = new StringBuffer();     
+        for (int i = 0; i < keys.size(); i++) {     
+            content.append((String) keys.get(i));     
+            content.append("=");     
+            content.append((String) hm.get((String) keys.get(i)));     
+            if (i != keys.size() - 1) {     
+                content.append("&");     
+            }     
+        }     
+        content.append(securityCode);     
+        String sign = md5(content.toString(),charset);     
+        content.delete(0,content.length());     
+        content.append(payGateway);     
+        for (int i = 0; i < keys.size(); i++) {     
+            content.append(keys.get(i));     
+            content.append("=");     
+            content.append(URLEncoder.encode((String) hm.get(keys.get(i)), charset));     
+            content.append("&");     
+        }     
+        content.append("&sign_type=MD5");     
+        keys.clear();     
+        keys = null;     
+        return content.toString();     
+    }     
+    /**   
+     * 生成md5编码字符串.   
+     * @param str 源字符串   
+     * @param charset 编码方式   
+     * @return   
+     *   
+     */    
+    public static String md5(String str,String charset) {     
+        if (str == null)     
+            return null;     
+        char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',     
+                'a', 'b', 'c', 'd', 'e', 'f' };     
+        MessageDigest md5MessageDigest = null;     
+        byte[] md5Bytes = null;     
+        char md5Chars[] = null;     
+        byte[] strBytes = null;     
+        try {     
+            strBytes = str.getBytes(charset);     
+            md5MessageDigest = MessageDigest.getInstance("MD5");     
+            md5MessageDigest.update(strBytes);     
+            md5Bytes = md5MessageDigest.digest();     
+            int j = md5Bytes.length;     
+            md5Chars = new char[j * 2];     
+            int k = 0;     
+            for (int i = 0; i < j; i++) {     
+                byte md5Byte = md5Bytes;     
+                md5Chars[k++] = hexDigits[md5Byte >>> 4 & 0xf];     
+                md5Chars[k++] = hexDigits[md5Byte & 0xf];     
+            }     
+            return new String(md5Chars);     
+        } catch (NoSuchAlgorithmException e) {     
+            //Log.output(e.toString(), Log.STD_ERR);     
+            return null;     
+        } catch (UnsupportedEncodingException e) {     
+            //Log.output(e.toString(), Log.STD_ERR);     
+            return null;     
+        } finally {     
+            md5MessageDigest = null;     
+            strBytes = null;     
+            md5Bytes = null;     
+        }     
+    } 
+
+当客户通过接口url付款后,支付宝会自动的去调用前面提供的[notify_url]参数中的url.
+
+（2）支付宝将付款信息返回给系统
+当客户付款后，支付宝就会自动调用上面表单提供的[notify_url]，下面是一个[notifyurl.jsp]的一个例子：
+	
+<%@ page contentType="text/html;charset=UTF-8"%><%@ page import="com.soft4j.AlipayMgr"%><%     
+    String ret = AlipayMgr.insert(request);     
+    if(ret==null){     
+        out.print("success");//成功接收支付宝发来的付款信息     
+    }else{     
+        out.print("fail");//出错     
+    }     
+%>
+
+如果确认收到支付宝发来的客户付款信息，则返回"success"，这样子支付宝就知道系统已经收到信息了；否则返回"fail"，这样支付宝会过一段时间后再次发来。其实，只有当支付宝收到"success"的返回信息后才会停止发送付款信息，否则会自动的每隔一段时间就调用上面
+的[notify_url]通信接口。
+
+（3）系统处理支付宝发来的付款信息
+	
+
+package com.soft4j;     
+import java.sql.Connection;     
+import java.sql.SQLException;     
+import java.util.Enumeration;     
+import java.util.Vector;     
+import javax.servlet.http.HttpServletRequest;     
+/**   
+ * 支付宝付款通知接口.   
+ *    
+ * @author stephen   
+ * @version 1.0.0   
+ */    
+public final class NotifyUrlMgr {     
+    public static String insert(HttpServletRequest httpRequest) {     
+        //定义变量和进行必要的初始化工作     
+        Enumeration parameterNames = null;     
+        String parameterName = null;     
+        String parameterValue = null;     
+        int count = 0;     
+        Vector[] params = null;     
+        Vector vParameterName = new Vector();     
+        Vector vParameterValue = new Vector();     
+        try {     
+            String orderId = httpRequest.getParameter("out_trade_no");//订单号     
+            if(orderId==null||"".equals(orderId)) orderId="-1";     
+            parameterNames = httpRequest.getParameterNames();     
+            boolean isPrint = false;     
+            while (parameterNames.hasMoreElements()) {//循环收取支付宝发来的所有参数信息     
+                parameterName = (String) parameterNames.nextElement();     
+                parameterValue = httpRequest.getParameter(parameterName);     
+                if(parameterValue==null) parameterValue="";     
+                vParameterName.add(parameterName);     
+                vParameterValue.add(parameterValue);     
+                count++;     
+            }     
+            //这里添加对收到信息的处理:一般是将这些信息存入数据库,然后对客户的订单进行处理.     
+            return null;     
+        } catch (Exception e) {     
+            return e.toString();     
+        } finally {      
+        }     
+    }     
+} 
