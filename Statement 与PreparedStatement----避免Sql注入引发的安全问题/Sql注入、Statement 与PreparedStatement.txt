@@ -1,0 +1,32 @@
+Sql注入
+	1）、概述
+		利用Sql语句的漏洞，将一些具有危害性的Sql命令加入到系统Sql语句中。从而实现具有一定目的
+	2）、示例
+		"select * from users where account='" + account+ "' and pwd='"+pwd+"'"	
+		输入数据：
+			mike' or 1=1 -- 	(将后面其他条件给注释掉)	
+			'
+	3）、解决方案
+		a、通过代码过滤常用关键字
+		b、使用PreparedStatement替代Statement
+		
+PreparedStatement		
+	1）、概述
+		PreparedStatment是Statment的子接口。PreparedStatment可以对待执行的Sql语句进行预编译。从而提高了代码的执行效率
+	2）、常用方法
+		setXxx(参数索引位置，参数值)	：为占位符传递参数值
+	3）、优势
+		a、避免注入攻击
+		b、提高执行效率
+	4）、简述PreparedStatement和Statment的区别	
+		a、Statment直接将Sql语句发送给数据库；
+                   PreparedStatement会将优化后的Sql语句发送给数据库，提高执行效率
+		b、Statment只能执行静态Sql语句；
+                   PreparedStatement可以执行动态Sql语句（参数后期进行传递）
+		c、Statment无法避免注入攻击；
+                   PreparedStatment可以避免注入攻击
+		d、Statment通过连接对象的createStatement()方法进行获取；
+                   PreparedStatement通过连接对象的preparedStatement()方法进行获取
+			
+
+
