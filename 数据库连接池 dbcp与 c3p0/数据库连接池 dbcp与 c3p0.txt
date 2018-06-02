@@ -1,0 +1,52 @@
+数据库连接池
+	1）、Connection的缺陷
+		Connection的每次连接都会产生一定的时间消耗。从而造成效率的降低。
+	2）、连接池
+		连接池中存储一定数量的Connection对象。连接池实际就是一个集合对象。每次需要使用连接对象时，直接从连接池中进行获取。
+		使用结束后会将连接对象重新放回到连接池中。
+	3）、常用参数
+		a、驱动类的名称（driverClassName）
+		b、数据库地址（url）
+		c、用户名（userName）
+		d、密码（password）
+		
+		e、最大空闲数（maxIdle）：数据库连接的最大空闲时间。超过空闲时间，数据库连接将被标记为不可用，然后被释放。设为0表示无限制
+		f、最大连接数（maxActive）：连接池允许的最大连接数量。设为0表示无限制
+		g、最大等待时间（maxWait）：最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+	4）、常用连接池
+		a、DBCP连接池
+			☆ 常用包
+				commons-dbcp-1.2.jar
+				commons-pool-1.6.jar
+			☆ 步骤
+				第一步：导入所需的包
+				第二步：添加配置文件（xxx.properties）
+				第三步：使用连接池
+			☆ 常用类
+				BasicDataSourceFactory	：工厂类，提供了用于获取DataSource对象的静态方法
+				DataSource				：数据源，其实就是连接池。通过该对象可以获取连接对象
+				Connection				：重新封装后的连接对象。
+			☆ 示例
+				见代码
+			☆ 注意事项
+				Connection应用完成后需要调用close()方法进行关闭（关闭并不是真实的关闭，只是归还给连接池）
+			☆ 说明
+				DBCP连接池的效率较低，所以一般应用较少
+		b、c3p0连接池
+			☆常用包
+				c3p0-0.9.2.1.jar
+				mchange-commons-java-0.2.3.4.jar
+			☆步骤
+				第一步：导入jar包
+				第二步：添加配置文件（c3p0-config.xml或config.properties）
+				第三步：使用连接池
+			☆常用类
+				ComboPooledDataSource ：连接池类
+				Connection			  :连接对象
+			☆示例
+				见代码
+			☆说明
+				C3p0的自动回收功能实际是由代理来实现的。
+		c、C3p0和dbcp
+			C3p0可以自动回收空闲连接对象。所以具有较高的效率
+			Dbcp没有提供自动回收机制，所以效率较低	
