@@ -1,0 +1,70 @@
+* {
+	margin: 0;
+}
+
+.top {
+	width: 100%;
+	height: 70px;
+	background: #000000;
+}
+
+.top .center {
+	width: 90%;
+	margin: 0 auto;
+	padding-top: 10px;
+}
+
+.top .center span {
+	color: #fff;
+	font-size: 20px;
+	font-weight: 1200;
+	padding-top: 15px;
+	float: right;
+}
+
+.tools {
+	width: 90%;
+	height: 40px;
+	margin: 30px auto;
+}
+
+.tools .btn {
+	width: 120px;
+	height: 38px;
+	background: #33cc99;
+	display: block;
+	text-align: center;
+	line-height: 38px;
+	text-decoration: none;
+	color: #fff;
+	border-radius: 4px;
+	transition: 0.3s;
+}
+
+.btn:hover {
+	border-radius: 20px;
+	transition: 0.3s;
+}
+
+.files {
+	width: 90%;
+	margin: 0 auto;
+}
+
+.files .f_table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.files .f_table thead tr td {
+	font-weight: 700;
+	line-height: 40px;
+	background: #e6e6e6;
+	color: #000;
+}
+
+.files .f_table tbody tr:hover {
+	background: #dddddd;
+	cursor: pointer;
+
+}
