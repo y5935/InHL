@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ngApp">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <title>学生体质健康管理系统</title>
+    <style>
+        .page-list .pagination {float:left;}
+        .page-list .pagination span {cursor: pointer;}
+        .page-list .pagination .separate span{cursor: default; border-top:none;border-bottom:none;}
+        .page-list .pagination .separate span:hover {background: none;}
+        .page-list .page-total {float:left; margin: 25px 20px;}
+        .page-list .page-total input, .page-list .page-total select{height: 26px; border: 1px solid #ddd;}
+        .page-list .page-total input {width: 40px; padding-left:3px;}
+        .page-list .page-total select {width: 50px;}
+        table, th , td  {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        table tr:nth-child(odd)	{
+            background-color: #f1f1f1;
+        }
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+    </style>
+    <style media="screen">
+        .navbar {
+            background-image: linear-gradient(#54B4EB, #2FA4E7 60%, #1D9CE5);
+            background-repeat: no-repeat;
+            border-bottom: 1px solid #178ACC;
+            box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 0px;
+        }
+
+        .navbar-default {
+            background-color: #2FA4E7;
+            border-color: #1995DC;
+        }
+
+        .navbar-default .navbar-brand,
+        .navbar-default .navbar-brand:hover,
+        .navbar-default .navbar-brand:focus ,
+        .navbar-default .navbar-nav > li > a {
+            color: #FFF;
+        }
+
+        .navbar-default .navbar-nav > li > a:hover,
+        .navbar-default .navbar-nav > li > a:focus {
+            color: #FFF;
+            background-color: #178ACC;
+        }
+
+        .navbar-default .navbar-toggle:hover,
+        .navbar-default .navbar-toggle:focus {
+            background-color: #178ACC;
+        }
+
+        .navbar-default .navbar-toggle {
+            border-color: #178ACC;
+        }
+
+        .navbar-default .navbar-toggle .icon-bar {
+            background-color: #FFF;
+        }
+    </style>
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular.min.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="js/pagination/tm.pagination.js"></script>
+    <script src="js/FileSaver.min.js"></script>
+    <script src="js/echarts.js"></script>
+    <script type="text/javascript">
+        angular.module('ngApp', ['ngRoute','tm.pagination'])
+            .controller('tongjichaxunController',function ($scope, $http) {
+                $scope.shengaoInfo={};
+                $scope.tizhongInfo={};
+                $scope.xiongweiInfo={};
+                $scope.feihuoliangInfo={};
+                require.config({paths: {echarts: 'js'}});
+                $scope.shenGaoTongJi=function () {
+                    // 使用
+                    require(['echarts','echarts/chart/bar'],function (ec) {
+                        var myChart = ec.init(document.getElementById('shengao'));
+                        var option = {
+                            tooltip: {show: true},
+                            legend: {data:['身高统计']},
+                            xAxis : [{type : 'category',data : ["1.5M以下","1.5M到1.6M","1.6M到1.7M","1.7M到1.8M","1.8M以上"]}],
+                            yAxis : [{type : 'value'}],
+                            series : [{"name":"身高统计","type":"bar","data":[$scope.shengaoInfo.a, $scope.shengaoInfo.b, $scope.shengaoInfo.c,
+                                $scope.shengaoInfo.d, $scope.shengaoInfo.e]}]
+                        };
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+                    });
+                }
+                $scope.tiZhongTongJi=function () {
+                    // 使用
+                    require(['echarts','echarts/chart/bar'],function (ec) {
+                        var myChart = ec.init(document.getElementById('tizhong'));
+                        var option = {
+                            tooltip: {show: true},
+                            legend: {data:['体重统计']},
+                            xAxis : [{type : 'category',data : ["90斤以下","90斤到120斤","120斤到150斤","150斤到180斤","180斤以上"]}],
+                            yAxis : [{type : 'value'}],
+                            series : [{"name":"体重统计","type":"bar","data":[$scope.tizhongInfo.a, $scope.tizhongInfo.b, $scope.tizhongInfo.c,
+                                $scope.tizhongInfo.d, $scope.tizhongInfo.e]}]
+                        };
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+                    });
+                }
+                $scope.xiongWeiTongJi=function () {
+                    // 使用
+                    require(['echarts','echarts/chart/bar'],function (ec) {
+                        var myChart = ec.init(document.getElementById('xiongwei'));
+                        var option = {
+                            tooltip: {show: true},
+                            legend: {data:['胸围统计']},
+                            xAxis : [{type : 'category',data : ["70CM以下","70CM到90CM","90CM到110CM","110CM到130CM","130CM以上"]}],
+                            yAxis : [{type : 'value'}],
+                            series : [{"name":"胸围统计","type":"bar","data":[$scope.xiongweiInfo.a, $scope.xiongweiInfo.b, $scope.xiongweiInfo.c,
+                                $scope.xiongweiInfo.d, $scope.xiongweiInfo.e]}]
+                        };
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+                    });
+                }
+                $scope.feiHuoLiangTongJi=function () {
+                    // 使用
+                    require(['echarts','echarts/chart/bar'],function (ec) {
+                        var myChart = ec.init(document.getElementById('feihuoliang'));
+                        var option = {
+                            tooltip: {show: true},
+                            legend: {data:['肺活量统计']},
+                            xAxis : [{type : 'category',data : ["2500毫升以下","2500到3000毫升","3000到3500毫升","3500到4000毫升","4000毫升以上"]}],
+                            yAxis : [{type : 'value'}],
+                            series : [{"name":"肺活量统计","type":"bar","data":[$scope.feihuoliangInfo.a, $scope.feihuoliangInfo.b, $scope.feihuoliangInfo.c,
+                                $scope.feihuoliangInfo.d, $scope.feihuoliangInfo.e]}]
+                        };
+                        // 为echarts对象加载数据
+                        myChart.setOption(option);
+                    });
+                }
+
+                $scope.tongji={};
+                $scope.getTongJiInfoNew = function () {
+                    $http({
+                        method: "post",
+                        url: "/getTongJiInfo",
+                        data: JSON.stringify({"profession":$scope.tongji.profession,
+                            "classAndGrade":$scope.tongji.classAndGrade})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            $scope.shengaoInfo=resp.data.data.shenGao;
+                            $scope.tizhongInfo=resp.data.data.tiZhong;
+                            $scope.xiongweiInfo=resp.data.data.xiongWei;
+                            $scope.feihuoliangInfo=resp.data.data.feiHuoLiang;
+                            $scope.shenGaoTongJi();
+                            $scope.tiZhongTongJi();
+                            $scope.xiongWeiTongJi();
+                            $scope.feiHuoLiangTongJi();
+                        } else {
+                            if (resp.data.message=='用户信息已失效！'){
+                                var r = confirm("用户信息已失效，请重新登录！");
+                                if (r == true) {
+                                    location.href="#/login";
+                                }
+                                return;
+                            }
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+            })
+            .controller('tijianController', function ($scope, $http) {
+                $scope.expTijian={};
+                $scope.selTijian={};
+                $scope.level = sessionStorage.getItem('level');
+                if ($scope.level==2){
+                    $scope.selTijian.username=sessionStorage.getItem('username');
+                }
+                $scope.paginationConf = {
+                    currentPage: 1,
+                    totalItems: 0, //当前所在的页
+                    itemsPerPage: 10,//每页展示的数据条数
+                    pagesLength: 9,//分页条目的长度（如果设置建议设置为奇数）
+                    perPageOptions: [10, 20, 30, 40, 50],
+                    rememberPerPage: 'perPageItems',
+                    onChange: function(){
+                        $scope.tijianInfoListNew();
+                    }
+                };
+                $scope.tijianInfoListNew = function (operationType) {
+                    if (operationType){
+                        $scope.paginationConf.currentPage=1;
+                    }
+                    $scope.expTijian.username = $scope.selTijian.username;
+                    $scope.expTijian.profession = $scope.selTijian.profession;
+                    $scope.expTijian.classAndGrade = $scope.selTijian.classAndGrade;
+                    $http({
+                        method: "post",
+                        url: "/tijianInfoList",
+                        data: JSON.stringify({"username":$scope.selTijian.username,"profession":$scope.selTijian.profession,
+                            "classAndGrade":$scope.selTijian.classAndGrade,"currentPage":$scope.paginationConf.currentPage,
+                            "itemsPerPage":$scope.paginationConf.itemsPerPage})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            $scope.tijianInfoList=resp.data.data;
+                            if ($scope.tijianInfoList.length>0){
+                                $('#exportTijianInfoListNew').show();
+                                $scope.paginationConf.totalItems=$scope.tijianInfoList[0].totalItems;
+                                if ($scope.level==2){
+                                    $('#add').hide();
+                                }
+                            }else {
+                                $scope.paginationConf.totalItems=0;
+                                $('#exportTijianInfoListNew').hide();
+                            }
+                        } else {
+                            if (resp.data.message=='用户信息已失效！'){
+                                var r = confirm("用户信息已失效，请重新登录！");
+                                if (r == true) {
+                                    location.href="#/login";
+                                }
+                                return;
+                            }
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+                $scope.operationType="";
+                $scope.exportTijianInfoList = function () {
+                    $http({
+                        method: "post",
+                        url: "/exportTijianInfoList",
+                        data: JSON.stringify({"username":$scope.expTijian.username,"profession":$scope.expTijian.profession,
+                            "classAndGrade":$scope.expTijian.classAndGrade}),
+                        responseType: 'arraybuffer'
+                    }).then(function (resp){
+                        debugger;
+                        var blob = new Blob([resp.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;"});
+                        saveAs(blob, "用户体检信息列表.xlsx");
+                    }).catch(function (resp) {
+                        debugger;
+                        if (resp.status==500){
+                            var r = confirm("用户信息已失效，请重新登录！");
+                            if (r == true) {
+                                location.href="#/login";
+                            }
+                            return;
+                        }
+                    });
+                }
+                $scope.add = function () {
+                    $scope.tijianInfo={};
+                    $('#tijianInfoUsername').attr("disabled",false);
+                    if ($scope.level==2){
+                        $('#tijianInfoUsername').attr("disabled",true);
+                        $scope.tijianInfo={};
+                        $scope.tijianInfo.username=sessionStorage.getItem('username');
+                    }
+                    $scope.operationType="add";
+                }
+                $scope.editTijianInfo = function (username,height,weight,vitalCapacity,chestCircumference,leftEye,rigthEye,remark) {
+                    debugger;
+                    $('#tijianInfoUsername').attr("disabled",true);
+                    $scope.tijianInfo={};
+                    $scope.tijianInfo.username=username;
+                    $scope.tijianInfo.height=height;
+                    $scope.tijianInfo.weight=weight;
+                    $scope.tijianInfo.vitalCapacity=vitalCapacity;
+                    $scope.tijianInfo.chestCircumference=chestCircumference;
+                    $scope.tijianInfo.leftEye=leftEye;
+                    $scope.tijianInfo.rigthEye=rigthEye;
+                    $scope.tijianInfo.remark=remark;
+                    $scope.operationType="edit";
+                }
+
+                $scope.save = function () {
+                    $http({
+                        method: "post",
+                        url: "/updateTijianInfo",
+                        data: JSON.stringify({"username":$scope.tijianInfo.username,"height":$scope.tijianInfo.height,
+                            "weight":$scope.tijianInfo.weight,"vitalCapacity":$scope.tijianInfo.vitalCapacity,
+                            "chestCircumference":$scope.tijianInfo.chestCircumference,"leftEye":$scope.tijianInfo.leftEye,
+                            "rigthEye": $scope.tijianInfo.rigthEye,"remark":$scope.tijianInfo.remark})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                                location.reload();
+                        } else {
+                            if (resp.data.message=='用户信息已失效！'){
+                                var r = confirm("用户信息已失效，请重新登录！");
+                                if (r == true) {
+                                    location.href="#/login";
+                                }
+                                return;
+                            }
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+
+                $scope.deleteTijianInfo = function (username) {
+                    debugger;
+                    var r = confirm("您确定要删除用户" + username + "的体检信息？");
+                    if (r == true) {
+                        $http({
+                            method: "post",
+                            url: "/deleteTijianInfo",
+                            data: JSON.stringify({"username": username})
+                        }).then(function (resp) {
+                            debugger;
+                            if (resp.data.status === 'OK') {
+                                location.reload();
+                            } else {
+                                if (resp.data.message=='用户信息已失效！'){
+                                    var r = confirm("用户信息已失效，请重新登录！");
+                                    if (r == true) {
+                                        location.href="#/login";
+                                    }
+                                    return;
+                                }
+                                alert(resp.data.message);
+                            }
+                        }).catch(function (resp) {
+                            debugger;
+                        });
+                    }
+                }
+                $scope.checkUsernameByTj = function () {
+                    $scope.checkUsernameByTjResult=false;
+                    $http({
+                        method: "post",
+                        url: "/checkTiJianInfo",
+                        data: JSON.stringify({"username":$scope.tijianInfo.username})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            if (resp.data.data==1){
+                                $scope.checkUsernameByTjResult=true;
+                            }
+                        } else {
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+            })
+            .controller('jibingController', ['$scope', '$http',function($scope, $http) {
+                $scope.expJibing={};
+                $scope.selJibing={};
+                $scope.paginationConf = {
+                    currentPage: 1,
+                    totalItems: 0, //当前所在的页
+                    itemsPerPage: 10,//每页展示的数据条数
+                    pagesLength: 9,//分页条目的长度（如果设置建议设置为奇数）
+                    perPageOptions: [10, 20, 30, 40, 50],
+                    rememberPerPage: 'perPageItems',
+                    onChange: function(){
+                        $scope.jibingInfoListNew();
+                    }
+                };
+                $scope.jibingInfoListNew = function (operationType) {
+                    $scope.expJibing.remark=$scope.selJibing.remark;
+                    if (operationType){
+                       $scope.paginationConf.currentPage=1;
+                    }
+                    debugger;
+                    $http({
+                        method: "post",
+                        url: "/tijianInfoList",
+                        data: JSON.stringify({"remark":$scope.selJibing.remark,"currentPage":$scope.paginationConf.currentPage,
+                        "itemsPerPage":$scope.paginationConf.itemsPerPage})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            $scope.jibingInfoList=resp.data.data;
+                            if($scope.jibingInfoList.length > 0){
+                                $('#exportJibingInfoListNew').show();
+                                $scope.paginationConf.totalItems=$scope.jibingInfoList[0].totalItems;
+                            } else {
+                                $scope.paginationConf.totalItems=0;
+                                $('#exportJibingInfoListNew').hide();
+                            }
+                        } else {
+                            if (resp.data.message=='用户信息已失效！'){
+                                var r = confirm("用户信息已失效，请重新登录！");
+                                if (r == true) {
+                                    location.href="#/login";
+                                }
+                                return;
+                            }
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+
+                $scope.exportJibingInfoList = function () {
+                    $http({
+                        method: "post",
+                        url: "/exportTijianInfoList",
+                        data: JSON.stringify({"remark":$scope.expJibing.remark}),
+                        responseType: 'arraybuffer'
+                    }).then(function (resp){
+                        debugger;
+                        var blob = new Blob([resp.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;"});
+                        saveAs(blob, "用户疾病信息列表.xlsx");
+                    }).catch(function (resp) {
+                        if (resp.status==500){
+                            var r = confirm("用户信息已失效，请重新登录！");
+                            if (r == true) {
+                                location.href="#/login";
+                            }
+                            return;
+                        }
+                        debugger;
+                    });
+                }
+            }])
+            .controller('userInfoController', function ($scope, $http) {
+                $scope.selUser={};
+                $scope.expUser={};
+                var username = sessionStorage.getItem('username');
+                var password = sessionStorage.getItem('password');
+                $scope.level = sessionStorage.getItem('level');
+                $scope.operationType="";
+                if ($scope.level == 2){
+                    $scope.selUser.username=username;
+                }
+                $scope.paginationConf = {
+                    currentPage: 1,
+                    totalItems: 0, //当前所在的页
+                    itemsPerPage: 10,//每页展示的数据条数
+                    pagesLength: 9,//分页条目的长度（如果设置建议设置为奇数）
+                    perPageOptions: [10, 20, 30, 40, 50],
+                    rememberPerPage: 'perPageItems',
+                    onChange: function(){
+                        $scope.userInfoListNew();
+                    }
+                };
+                $scope.userInfoListNew = function (operationType) {
+                    if (operationType){
+                        $scope.paginationConf.currentPage=1;
+                    }
+                    $scope.expUser.username = $scope.selUser.username;
+                    $scope.expUser.profession = $scope.selUser.profession;
+                    $scope.expUser.classAndGrade = $scope.selUser.classAndGrade;
+                    $http({
+                        method: "post",
+                        url: "/userInfoList",
+                        data: JSON.stringify({"username":$scope.selUser.username,"profession":$scope.selUser.profession,
+                        "classAndGrade":$scope.selUser.classAndGrade,"currentPage":$scope.paginationConf.currentPage,
+                            "itemsPerPage":$scope.paginationConf.itemsPerPage})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            $scope.userInfoList=resp.data.data;
+                            if ($scope.userInfoList.length>0){
+                                $('#exportUserInfoListNew').show();
+                                $scope.paginationConf.totalItems=$scope.userInfoList[0].totalItems;
+                                if ($scope.level==2){
+                                    $('#add').hide();
+                                }
+                            } else {
+                                $scope.paginationConf.totalItems=0;
+                                $('#exportUserInfoListNew').hide();
+                            }
+                        } else {
+                            if (resp.data.message=='用户信息已失效！'){
+                                var r = confirm("用户信息已失效，请重新登录！");
+                                if (r == true) {
+                                    location.href="#/login";
+                                }
+                                return;
+                            }
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+                $scope.exportUserInfoList = function () {
+                    $http({
+                        method: "post",
+                        url: "/exportUserInfoList",
+                        data: JSON.stringify({"username":$scope.expUser.username,"profession":$scope.expUser.profession,
+                            "classAndGrade":$scope.expUser.classAndGrade}),
+                        responseType: 'arraybuffer'
+                    }).then(function (resp){
+                        debugger;
+                            var blob = new Blob([resp.data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;"});
+                            saveAs(blob, "用户信息列表.xlsx");
+                    }).catch(function (resp) {
+                        debugger;
+                        if (resp.status==500){
+                            var r = confirm("用户信息已失效，请重新登录！");
+                            if (r == true) {
+                                location.href="#/login";
+                            }
+                            return;
+                        }
+                    });
+                }
+                $scope.editUser = function (username,password,profession,classAndGrade,realname,sex) {
+                    debugger;
+                    $('#username').attr("disabled",true);
+                    $scope.userInfo={};
+                    $scope.userInfo.username=username;
+                    $scope.userInfo.password=password;
+                    $scope.userInfo.profession=profession;
+                    $scope.userInfo.classAndGrade=classAndGrade;
+                    $scope.userInfo.realname=realname;
+                    $scope.userInfo.sex=sex
+                    $scope.operationType="edit";
+                }
+                $scope.deleteUser = function (username) {
+                    debugger;
+                    var r=confirm("您确定要删除用户" + username + "？");
+                    if (r==true)
+                    {
+                        $http({
+                            method: "post",
+                            url: "/deleteUserInfo",
+                            data: JSON.stringify({"username":username})
+                        }).then(function (resp){
+                            debugger;
+                            if (resp.data.status === 'OK') {
+                                location.reload();
+                            } else {
+                                if (resp.data.message=='用户信息已失效！'){
+                                    var r = confirm("用户信息已失效，请重新登录！");
+                                    if (r == true) {
+                                        location.href="#/login";
+                                    }
+                                    return;
+                                }
+                                alert(resp.data.message);
+                            }
+                        }).catch(function (resp) {
+                            debugger;
+                        });
+                    }
+                }
+
+                $scope.save = function () {
+                    $('input').attr("disabled",true);
+                    $http({
+                        method: "post",
+                        url: "/updateUserInfo",
+                        data: JSON.stringify({"username":$scope.userInfo.username,"password":$scope.userInfo.password,
+                            "profession":$scope.userInfo.profession,"classAndGrade":$scope.userInfo.classAndGrade,
+                            "realname":$scope.userInfo.realname,"sex":$scope.userInfo.sex})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            if ($scope.level == 2){
+                                sessionStorage.setItem('username',$scope.userInfo.username);
+                                sessionStorage.setItem('password',$scope.userInfo.password);
+                            }
+                            location.reload();
+                        } else {
+                            if (resp.data.message=='用户信息已失效！'){
+                                var r = confirm("用户信息已失效，请重新登录！");
+                                if (r == true) {
+                                    location.href="#/login";
+                                }
+                                return;
+                            }
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+                $scope.add = function () {
+                    $('#username').attr("disabled",false);
+                    $scope.userInfo={};
+                    $scope.userInfo.sex='male';
+                    $scope.operationType="add";
+                }
+
+                $scope.checkUsernameByAddUser = function () {
+                    $scope.checkUsernameByAddUserResult=false;
+                    $http({
+                        method: "post",
+                        url: "/checkUsername",
+                        data: JSON.stringify({"username":$scope.userInfo.username})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            if (resp.data.data==1){
+                                $scope.checkUsernameByAddUserResult=true;
+                            }
+                        } else {
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger;
+                    });
+                }
+            })
+            .controller('loginController', ['$scope', '$http','$rootScope',function($scope, $http,$rootScope) {
+                $scope.login = function () {
+                    $http({
+                        method: "post",
+                        url: "/login",
+                        data: JSON.stringify({"username":$scope.username,"password":$scope.password})
+                    }).then(function (resp){
+                        debugger;
+                        if (resp.data.status === 'OK') {
+                            sessionStorage.setItem('username',resp.data.data.username);
+                            sessionStorage.setItem('password',resp.data.data.password);
+                            sessionStorage.setItem('level',resp.data.data.level);
+                            location.href="#/userInfo";
+                        } else {
+                            alert(resp.data.message);
+                        }
+                    }).catch(function (resp) {
+                        debugger
+                        alert(resp.data.message);
+                    });
+                }
+            }])
+            .controller('registController', ['$scope', '$http',function($scope, $http) {
+                    $scope.sex='male';
+                    $scope.regist = function () {
+                        $http({
+                            method: "post",
+                            url: "/registUser",
+                            data: JSON.stringify({"username":$scope.username,"password":$scope.password,"profession":$scope.profession,
+                                "classAndGrade":$scope.classAndGrade,"realname":$scope.realname,"sex":$scope.sex})
+                        }).then(function (resp){
+                            if (resp.data.status === 'OK') {
+                                location.href="#/login";
+                            } else {
+                                alert(resp.data.message);
+                            }
+                        }).catch(function (resp) {
+                            debugger;
+                        });
+                    }
+
+                    $scope.checkUsername = function () {
+                        $scope.checkUsernameResult=false;
+                        $http({
+                            method: "post",
+                            url: "/checkUsername",
+                            data: JSON.stringify({"username":$scope.username})
+                        }).then(function (resp){
+                            debugger;
+                            if (resp.data.status === 'OK') {
+                                if (resp.data.data==1){
+                                    $scope.checkUsernameResult=true;
+                                }
+                            } else {
+                                alert(resp.data.message);
+                            }
+                        }).catch(function (resp) {
+                            debugger;
+                        });
+                    }
+
+
+            }])
+            .config(['$locationProvider', function($locationProvider) {   $locationProvider.hashPrefix(''); }])
+            .config(function ($routeProvider) {
+                $routeProvider.
+                when('/tongjichaxun', {
+                    templateUrl: 'tongjichaxun.html',
+                    controller: 'tongjichaxunController'
+                }).
+                when('/tijian', {
+                    templateUrl: 'tijian.html',
+                    controller: 'tijianController'
+                }).
+                when('/jibing', {
+                    templateUrl: 'jibing.html',
+                    controller: 'jibingController'
+                }).
+                when('/login', {
+                    templateUrl: 'login.html',
+                    controller: 'loginController'
+                }).
+                when('/regist', {
+                    templateUrl: 'regist.html',
+                    controller: 'registController'
+                }).
+                when('/userInfo', {
+                    templateUrl: 'userInfo.html',
+                    controller: 'userInfoController'
+                }).
+                when('/help', {
+                    templateUrl: 'help.html',
+                    controller: ''
+                }).
+                otherwise({
+                    redirectTo: '/login'
+                });
+            });
+    </script>
+</head>
+<body>
+
+<script type="text/ng-template" id="login.html">
+    <div  style="width: 350px;border:solid 1px #C0C0C0">
+     <form name="lo" novalidate ng-controller="loginController" style="width: 250px;padding-top:50px;padding-bottom:50px;">
+        <div class="input-group" style="white-space: nowrap">
+            <span class="input-group-addon">用户名：</span>
+            <input type="text" ng-model="username" class="form-control" required name="username" ng-maxlength="15">
+            <span style="color: red;line-height: 2;" ng-show="lo.username.$dirty && lo.username.$error.required" >用户名不能为空！</span>
+            <span style="color: red;line-height: 2;" ng-show="lo.username.$error.maxlength">用户名最多15个字符！</span>
+        </div>
+        <br/>
+        <div class="input-group" style="white-space: nowrap">
+            <span class="input-group-addon">密&nbsp&nbsp&nbsp码：</span>
+            <input type="password" class="form-control" ng-model="password" name="password" required ng-maxlength="15">
+            <span style="color: red;line-height: 2;" ng-show="lo.password.$dirty && lo.password.$error.required" >密码不能为空！</span>
+            <span style="color: red;line-height: 2;" ng-show="lo.password.$error.maxlength" >密码最多15个字符！</span>
+        </div>
+        <br/>
+        <div align="center">
+            <button class="btn btn-default" ng-click="login()" ng-disabled="!lo.$valid">登&nbsp录</button>
+            <button class="btn btn-default" onclick="window.location.href='#/regist'">立&nbsp即&nbsp注&nbsp册</button>
+        </div>
+    </form>
+    </div>
+</script>
+    <script type="text/ng-template" id="regist.html">
+        <div  style="width: 350px;border:solid 1px #C0C0C0">
+        <form name="rg" novalidate style="width: 250px;padding-top: 50px;padding-bottom: 50px" ng-controller="registController">
+            <div class="input-group" style="white-space: nowrap">
+                <span class="input-group-addon">用户名：</span>
+                <input type="text" class="form-control" ng-model="username" required name="username" ng-maxlength="15" ng-blur="checkUsername()">
+                <span style="color: red;line-height: 2;" ng-show="rg.username.$dirty && rg.username.$error.required" >用户名不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="rg.username.$error.maxlength">用户名最多15个字符！</span>
+                <span style="color: red;line-height: 2;" ng-show="checkUsernameResult">该用户名已存在！</span>
+            </div>
+            <br/>
+            <div class="input-group"  style="white-space: nowrap">
+                <span class="input-group-addon">密&nbsp&nbsp&nbsp码：</span>
+                <input type="password" class="form-control" ng-model="password"  name="password" required ng-maxlength="15">
+                <span style="color: red;line-height: 2;" ng-show="rg.password.$dirty && rg.password.$error.required" >密码不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="rg.password.$error.maxlength" >密码最多15个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group"  style="white-space: nowrap">
+                <span class="input-group-addon">所属系：</span>
+                <input type="text" class="form-control" ng-model="profession" name="profession" required ng-maxlength="10">
+                <span style="color: red;line-height: 2;" ng-show="rg.profession.$dirty && rg.profession.$error.required" >所属系不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="rg.profession.$error.maxlength" >所属系最多10个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group"  style="white-space: nowrap">
+                <span class="input-group-addon">所属班：</span>
+                <input type="text" class="form-control" ng-model="classAndGrade" name="classAndGrade" required ng-maxlength="10">
+                <span style="color: red;line-height: 2;" ng-show="rg.classAndGrade.$dirty && rg.classAndGrade.$error.required" >所属班不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="rg.classAndGrade.$error.maxlength" >所属班最多10个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group"  style="white-space: nowrap">
+                <span class="input-group-addon">真实名：</span>
+                <input type="text" class="form-control" aria-describedby="sizing-addon5" ng-model="realname" name="realname" required ng-maxlength="5">
+                <span style="color: red;line-height: 2;" ng-show="rg.realname.$dirty && rg.realname.$error.required" >真实名不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="rg.realname.$error.maxlength" >真实名最多5个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group">
+                <span class="input-group-addon">性&nbsp&nbsp&nbsp别：</span>&nbsp&nbsp&nbsp
+                <input type="radio" name="sex" aria-describedby="sizing-addon6" value="male" ng-checked="{sex=='male'}" ng-model="sex">男&nbsp&nbsp&nbsp
+                <input type="radio" name="sex" aria-describedby="sizing-addon7" value="female" ng-checked="sex==female" ng-model="sex">女
+            </div>
+            <br/>
+            <div align="center">
+                <button type="submit" class="btn btn-default" ng-click="regist()" ng-disabled="!rg.$valid || checkUsernameResult">立&nbsp即&nbsp注&nbsp册</button>
+            </div>
+        </form>
+        </div>
+    </script>
+    <script type="text/ng-template" id="userInfo.html">
+        <div ng-controller="userInfoController">
+        <div ng-show="operationType!='add' && operationType!='edit'">
+        <table style="width: 100%">
+            <tr ng-show="level==1">
+                <td colspan="2">用户名<input type="text" ng-model="selUser.username" id="selUsername"></td>
+                <td colspan="2">所属系<input type="text" ng-model="selUser.profession" id="selProfession"></td>
+                <td colspan="2">所属班<input type="text" ng-model="selUser.classAndGrade" id="selClassAndGrade"></td>
+            </tr>
+            <tr ng-show="level==1">
+                <td colspan="6" align="right">
+                    <button  class="btn btn-default" ng-click="userInfoListNew()" >查&nbsp询</button>
+                    <button  class="btn btn-default" ng-click="add()">新&nbsp增</button>
+                    <button  class="btn btn-default" ng-click="exportUserInfoList()" id="exportUserInfoListNew">导&nbsp出</button>
+                </td>
+
+            </tr>
+            <tr>
+                <td>用户名</td>
+                <td>所属系</td>
+                <td>所属班</td>
+                <td>真实名</td>
+                <td>性别</td>
+                <td style="width: 10%">操作</td>
+            </tr>
+            <tr ng-repeat="x in userInfoList">
+                <td>{{ x.username }}</td>
+                <td>{{ x.profession }}</td>
+                <td>{{ x.classAndGrade }}</td>
+                <td>{{ x.realname }}</td>
+                <td><span ng-show="{{x.sex=='female'}}">女</span><span ng-show="{{x.sex=='male'}}">男</span></td>
+                <td>
+                    <button  class="btn btn-default" ng-click="editUser(x.username,x.password,x.profession,x.classAndGrade,x.realname,x.sex)" >编&nbsp辑</button>
+                    <button  class="btn btn-default" ng-click="deleteUser(x.username)" ng-show="level==1">删&nbsp除</button>
+                </td>
+            </tr>
+        </table>
+            <tm-pagination conf="paginationConf"></tm-pagination>
+        </div>
+        <form name="ui" novalidate style="width: 250px;" >
+        <div ng-show="operationType=='edit'|| operationType=='add'">
+            <div class="input-group" style="white-space: nowrap">
+                <span class="input-group-addon">用户名：</span>
+                <input type="text" class="form-control" ng-model="userInfo.username" id="username" disabled  required name="username" ng-maxlength="15" ng-blur="checkUsernameByAddUser()">
+                <span style="color: red;line-height: 2;" ng-show="ui.username.$dirty && ui.username.$error.required" >用户名不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="ui.username.$error.maxlength">用户名最多15个字符！</span>
+                <span style="color: red;line-height: 2;" ng-show="checkUsernameByAddUserResult">该用户名已存在！</span>
+            </div>
+            <br/>
+            <div class="input-group" style="white-space: nowrap">
+                <span class="input-group-addon">密&nbsp&nbsp&nbsp码：</span>
+                <input type="password" class="form-control" ng-model="userInfo.password" required name="password" ng-maxlength="15">
+                <span style="color: red;line-height: 2;" ng-show="ui.password.$dirty && ui.password.$error.required" >密码不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="ui.password.$error.maxlength" >密码最多15个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group" style="white-space: nowrap">
+                <span class="input-group-addon">所属系：</span>
+                <input type="text" class="form-control" ng-model="userInfo.profession" required name="profession" ng-maxlength="10">
+                <span style="color: red;line-height: 2;" ng-show="ui.profession.$dirty && ui.profession.$error.required" >所属系不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="ui.profession.$error.maxlength" >所属系最多10个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group" style="white-space: nowrap">
+                <span class="input-group-addon">所属班：</span>
+                <input type="text" class="form-control" ng-model="userInfo.classAndGrade" required name="classAndGrade" ng-maxlength="10">
+                <span style="color: red;line-height: 2;" ng-show="ui.classAndGrade.$dirty && ui.classAndGrade.$error.required" >所属班不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="ui.classAndGrade.$error.maxlength" >所属班最多10个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group" style="white-space: nowrap">
+                <span class="input-group-addon">真实名：</span>
+                <input type="text" class="form-control" ng-model="userInfo.realname"  required name="realname" ng-maxlength="5">
+                <span style="color: red;line-height: 2;" ng-show="ui.realname.$dirty && ui.realname.$error.required" >真实名不能为空！</span>
+                <span style="color: red;line-height: 2;" ng-show="ui.realname.$error.maxlength" >真实名最多5个字符！</span>
+            </div>
+            <br/>
+            <div class="input-group">
+                <span class="input-group-addon">性&nbsp&nbsp&nbsp别：</span>&nbsp&nbsp&nbsp
+                <input type="radio" name="sex" aria-describedby="sizing-addon6" value="male" ng-checked="{userInfo.sex=='male'}" ng-model="userInfo.sex">男&nbsp&nbsp&nbsp
+                <input type="radio" name="sex" aria-describedby="sizing-addon7" value="female" ng-checked="{userInfo.sex=='male'}" ng-model="userInfo.sex">女
+            </div>
+            <br/>
+            <div align="center">
+                <button type="submit" class="btn btn-default" onclick="location.reload()" ng-show="operationType=='edit' || operationType=='add'" >返&nbsp回</button>
+                <button type="submit" class="btn btn-default" ng-click="save()" ng-disabled="!ui.$valid || checkUsernameByAddUserResult">保&nbsp存</button>
+            </div>
+        </div>
+        </form>
+        </div>
+
+    </script>
+    <script type="text/ng-template" id="tijian.html">
+        <div ng-controller="tijianController">
+            <div ng-show="operationType!='edit' && operationType!='add'">
+                <table style="width: 100%">
+                    <tr ng-show="level==1">
+                        <td colspan="4">用户名<input type="text" ng-model="selTijian.username" id="selTijianUsername"></td>
+                        <td colspan="4">所属系<input type="text" ng-model="selTijian.profession" id="selTijianProfession"></td>
+                        <td colspan="5">所属班<input type="text" ng-model="selTijian.classAndGrade" id="selTijianClassAndGrade"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="13" align="right">
+                            <button  class="btn btn-default" ng-click="tijianInfoListNew('query')" ng-show="level==1" >查&nbsp询</button>
+                            <button  class="btn btn-default" ng-click="add()" id="add">新&nbsp增</button>
+                            <button  class="btn btn-default" ng-click="exportTijianInfoList()" id="exportTijianInfoListNew"  ng-show="level==1" >导&nbsp出</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>用户名</td>
+                        <td>所属系</td>
+                        <td>所属班</td>
+                        <td>真实姓名</td>
+                        <td>性别</td>
+                        <td>身高（单位CM）</td>
+                        <td>体重（单位KG）</td>
+                        <td>肺活量（单位CC）</td>
+                        <td>胸围（单位CM）</td>
+                        <td>左眼视力</td>
+                        <td>右眼视力</td>
+                        <td>备注（病情）</td>
+                        <td>操作</td>
+                    </tr>
+                    <tr ng-repeat="x in tijianInfoList">
+                        <td>{{ x.username }}</td>
+                        <td>{{ x.profession }}</td>
+                        <td>{{ x.classAndGrade }}</td>
+                        <td>{{ x.realname }}</td>
+                        <td><span ng-show="{{x.sex=='female'}}">女</span><span ng-show="{{x.sex=='male'}}">男</span></td>
+                        <td>{{ x.height }}</td>
+                        <td>{{ x.weight }}</td>
+                        <td>{{ x.vitalCapacity }}</td>
+                        <td>{{ x.chestCircumference }}</td>
+                        <td>{{ x.leftEye }}</td>
+                        <td>{{ x.rigthEye }}</td>
+                        <td>{{ x.remark }}</td>
+                        <td>
+                            <button  class="btn btn-default" ng-click="editTijianInfo(x.username,x.height,x.weight,x.vitalCapacity,x.chestCircumference,x.leftEye,x.rigthEye,x.remark)" >编&nbsp辑</button>
+                            <button  class="btn btn-default" ng-click="deleteTijianInfo(x.username)" >删&nbsp除</button>
+                        </td>
+                    </tr>
+                </table>
+                <tm-pagination conf="paginationConf"></tm-pagination>
+            </div>
+            <div ng-show="operationType=='edit' || operationType=='add'">
+                <form  name="tj" novalidate>
+                <table style="width: 100%">
+                    <tr>
+                        <td colspan="2" style="width: 33%">&nbsp&nbsp&nbsp用户名
+                            <input type="text" ng-model="tijianInfo.username" id="tijianInfoUsername" required name="username" ng-maxlength="15" ng-blur="checkUsernameByTj()">
+                            <span style="color: red;line-height: 2;" ng-show="tj.username.$dirty && tj.username.$error.required" >用户名不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.username.$error.maxlength">用户名最多15个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="checkUsernameByTjResult && !(tj.username.$dirty && tj.username.$error.required)">该用户的体检信息已存在！</span>
+                        </td>
+                        <td colspan="2" style="width: 33%">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp身高
+                            <input type="text" ng-model="tijianInfo.height" required name="height" ng-maxlength="3" ng-pattern="/^[0-9]*$/">
+                            <span style="color: red;line-height: 2;" ng-show="tj.height.$dirty && tj.height.$error.required" >身高不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.height.$error.maxlength">身高最多3个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.height.$error.pattern">身高只能为正整数！</span>
+                        </td>
+                        <td colspan="2" style="width: 33%">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp体重
+                            <input type="text" ng-model="tijianInfo.weight" required name="weight" ng-maxlength="3" ng-pattern="/^[0-9]*$/">
+                            <span style="color: red;line-height: 2;" ng-show="tj.weight.$dirty && tj.weight.$error.required" >体重不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.weight.$error.maxlength">体重最多3个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.weight.$error.pattern">体重只能为正整数！</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">&nbsp&nbsp&nbsp肺活量
+                            <input type="text" ng-model="tijianInfo.vitalCapacity" required name="vitalCapacity" ng-maxlength="4" ng-pattern="/^[0-9]*$/">
+                            <span style="color: red;line-height: 2;" ng-show="tj.vitalCapacity.$dirty && tj.vitalCapacity.$error.required" >肺活量不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.vitalCapacity.$error.maxlength">肺活量最多4个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.vitalCapacity.$error.pattern">肺活量只能为正整数！</span>
+                        </td>
+                        <td colspan="2">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp胸围
+                            <input type="text" ng-model="tijianInfo.chestCircumference" required name="chestCircumference" ng-maxlength="3" ng-pattern="/^[0-9]*$/">
+                            <span style="color: red;line-height: 2;" ng-show="tj.chestCircumference.$dirty && tj.chestCircumference.$error.required" >胸围不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.chestCircumference.$error.maxlength">胸围最多4个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.chestCircumference.$error.pattern">胸围只能为正整数！</span>
+                        </td>
+                        <td colspan="2">左眼视力
+                            <input type="number" ng-model="tijianInfo.leftEye" required name="leftEye" ng-maxlength="3">
+                            <span style="color: red;line-height: 2;" ng-show="tj.leftEye.$dirty && tj.leftEye.$error.required" >左眼视力不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.leftEye.$error.maxlength">左眼视力最多3个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.leftEye.$error.number">左眼视力只能为数字！</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">右眼视力
+                            <input type="number" ng-model="tijianInfo.rigthEye"  required name="rigthEye" ng-maxlength="3">
+                            <span style="color: red;line-height: 2;" ng-show="tj.rigthEye.$dirty && tj.rigthEye.$error.required" >右眼视力不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.rigthEye.$error.maxlength">右眼视力最多3个字符！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.rigthEye.$error.number">右眼视力只能为数字！</span>
+                        </td>
+                        <td colspan="2">备注（病情）
+                            <input type="text" ng-model="tijianInfo.remark"  required name="remark" ng-maxlength="32" >
+                            <span style="color: red;line-height: 2;" ng-show="tj.remark.$dirty && tj.remark.$error.required" >备注不能为空！</span>
+                            <span style="color: red;line-height: 2;" ng-show="tj.remark.$error.maxlength">备注最多32个字符！</span>
+                        </td>
+                        <td colspan="2">&nbsp</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                        <button type="submit" class="btn btn-default" onclick="location.reload()" ng-show="operationType=='edit' || operationType=='add'" >返&nbsp回</button>
+                        <button type="submit" class="btn btn-default" ng-click="save()" ng-disabled="!tj.$valid || checkUsernameByTjResult">保&nbsp存</button>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </div>
+
+        </div>
+    </script>
+<script type="text/ng-template" id="jibing.html">
+    <div ng-controller="jibingController">
+    <table style="width: 100%">
+        <tr>
+            <td colspan="12">病情<input type="text" ng-model="selJibing.remark"></td>
+        </tr>
+        <tr>
+            <td colspan="12" align="right">
+                <button  class="btn btn-default" ng-click="jibingInfoListNew('query')">查&nbsp询</button>
+                <button  class="btn btn-default" ng-click="exportJibingInfoList()" id="exportJibingInfoListNew">导&nbsp出</button>
+            </td>
+        </tr>
+        <tr>
+            <td>用户名</td>
+            <td>所属系</td>
+            <td>所属班</td>
+            <td>真实姓名</td>
+            <td>性别</td>
+            <td>身高（单位/厘米）</td>
+            <td>体重（单位/斤）</td>
+            <td>肺活量（单位/毫升）</td>
+            <td>胸围（单位/厘米）</td>
+            <td>左眼视力</td>
+            <td>右眼视力</td>
+            <td>备注（病情）</td>
+        </tr>
+        <tr ng-repeat="x in jibingInfoList">
+            <td>{{ x.username }}</td>
+            <td>{{ x.profession }}</td>
+            <td>{{ x.classAndGrade }}</td>
+            <td>{{ x.realname }}</td>
+            <td><span ng-show="{{x.sex=='female'}}">女</span><span ng-show="{{x.sex=='male'}}">男</span></td>
+            <td>{{ x.height }}</td>
+            <td>{{ x.weight }}</td>
+            <td>{{ x.vitalCapacity }}</td>
+            <td>{{ x.chestCircumference }}</td>
+            <td>{{ x.leftEye }}</td>
+            <td>{{ x.rigthEye }}</td>
+            <td>{{ x.remark }}</td>
+        </tr>
+    </table>
+    <tm-pagination conf="paginationConf"></tm-pagination>
+    </div>
+</script>
+<script type="text/ng-template" id="tongjichaxun.html">
+    <div ng-controller="tongjichaxunController"  ng-init="getTongJiInfoNew()">
+        <table style="width: 100%">
+            <tr>
+                <td colspan="2">
+                    所属系<input type="text" ng-model="tongji.profession">
+                    所属班<input type="text" ng-model="tongji.classAndGrade">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <button  class="btn btn-default" ng-click="getTongJiInfoNew()">查&nbsp询</button>
+                </td>
+            </tr>
+            <tr>
+                <td><div id="shengao" style="height:400px;width: 620px"></div></td>
+                <td><div id="tizhong" style="height:400px;width: 675px"></div></td>
+            </tr>
+            <tr>
+                <td><div id="xiongwei" style="height:400px;width: 620px"></div></td>
+                <td><div id="feihuoliang" style="height:400px;width: 675px"></div></td>
+            </tr>
+        </table>
+    </div>
+</script>
+<script type="text/ng-template" id="help.html">
+    若需要帮助，请联系我：ncist@123
+</script>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <!--header section -->
+        <div class="navbar-header">
+            <span class="navbar-brand">学生体质健康管理系统</span>
+        </div>
+        <!-- menu section -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#/userInfo">用户管理</a></li>
+                <li><a href="#/tijian">体检信息管理</a></li>
+                <li><a href="#/tongjichaxun">查询统计</a></li>
+                <li><a href="#/jibing">疾病查询</a></li>
+                <li><a href="#/help">帮助</a></li>
+                <li><a href="#">登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div ng-view align="center"></div>
+</body>
+
+</html>
