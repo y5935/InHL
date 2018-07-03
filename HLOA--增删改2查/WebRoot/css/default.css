@@ -1,0 +1,31 @@
+@CHARSET "UTF-8";
+
+body{
+	padding:0px;
+	margin:0px auto;
+	font-size:14px;
+}
+
+.grid{
+	width:100%;
+	border-collapse: collapse;
+}
+
+.grid th{
+	color:#FFF;
+	padding: 10px 0px;
+	background:orange;
+	border:solid 1px gray;
+}
+
+.grid td{
+	padding:6px 0px;
+	border:solid 1px gray;
+	
+}
+
+.find_area{
+	color:blue;
+	background: gray;
+	border:solid 1px blue;
+}
