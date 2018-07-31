@@ -1,0 +1,212 @@
+16.	拦截器
+16.1.	概述
+1)	过滤器
+	过滤器对所有请求和响应进行拦截(过滤)，过滤器可以过滤所有请求，如：Jsp、servlet、jpg、js等。过滤器属于容器。
+2)	拦截器
+   拦截器在Action的请求前后被执行。拦截器可以在请求处理方法执行前进行控制。拦截器是AOP的一种体现。
+   拦截器是Struts2的基石，struts2的很多功能都是通过拦截器进行实现的。如：类型转换，参数映射等。
+16.2.	名词
+1)	拦截器
+	拦截器(interceptor)可以动态的拦截Action调用的对象，拦截器在Action的执行前后进行拦截，拦截器可以阻止Action的执行，也可以对Action请求的资源进行处理。
+2)	拦截器链
+	拦截器链(interceptor chain)也称为拦截器栈(interceptor stack)，他是有一系列拦截器组成的。其中各拦截器的执行与配置直接相关。 
+16.3.	实现方式
+16.3.1.	继承方式
+1)	实现步骤
+?	创建类并继承自AbstractInterceptor
+?	编写请求处理代码
+?	配置拦截器
+?	在Action中引用拦截器
+2)	示例
+【Interceptor】
+public class TimeInterceptor extends AbstractInterceptor{
+	
+	/**
+	 * 拦截器的处理方法
+	 * invoke将调用下一个拦截器的请求处理方法。如果后续没有拦截器，则将调用Action的请求处理方法进行执行。
+	 */
+	@Override
+	public String intercept(ActionInvocation invocation) throws Exception {
+		//请求处理方法执行前调用
+		//System.out.println("before:TimeInterceptor is do......");
+		Long begin = System.currentTimeMillis();
+		
+		//调用请求处理方法
+		String result = invocation.invoke();
+		
+		//请求处理方法执行后调用
+		System.out.println("after:TimeInterceptor is do......");
+		Long end = System.currentTimeMillis();
+		
+		String name = invocation.getProxy().getActionName();
+		System.out.println(name + "执行用时：" + (end - begin));
+		
+		return result;
+	}
+}
+【Interceptor配置】
+<struts>
+	<package name="UserAction" extends="struts-default">
+		<!-- 配置Interceptor -->
+		<interceptors>
+			<interceptor name="timer" class="cn.hl.interceptor.TimeInterceptor"></interceptor>
+		</interceptors>	
+	</package>
+</struts>
+【action】
+	/**
+	 * 请求处理方法
+	 * @return
+	 */
+	public String add(){
+		System.out.println("add() method is do......");
+		
+		return "success";
+	}
+【Action的配置】
+<struts>
+	<package name="UserAction" extends="struts-default">
+		<!-- 配置Interceptor -->
+		<interceptors>
+			<interceptor name="timer" class="cn.hl.interceptor.TimeInterceptor"></interceptor>
+		</interceptors>
+		
+		<!-- 配置UserAction -->
+		<action name="add" class="cn.hl.action.UserAction" method="add">
+			<interceptor-ref name="timer"></interceptor-ref>
+			<result>/index.jsp</result>
+		</action>
+	</package>
+</struts>
+【执行结果】
+ 
+16.3.2.	实现的方式
+1)	步骤
+?	创建类并实现Interceptor接口
+?	实现接口的init()、destory和intercept()方法
+?	配置Interceptor
+?	引用自定义Interceptor
+2)	示例
+public class StringInterceptor implements Interceptor {
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String intercept(ActionInvocation invocation) throws Exception {
+		System.out.println("StringInterceptor is do......");
+		return invocation.invoke();
+	}
+
+}
+16.4.	配置规则
+1)	多个拦截器可以组成拦截器栈
+		<!-- 配置Interceptor -->
+		<interceptors>
+			<interceptor name="timer" class="cn.hl.interceptor.TimeInterceptor"></interceptor>
+			<interceptor name="str" class="cn.hl.interceptor.StringInterceptor"></interceptor>
+			
+			<!-- 配置拦截器链 -->
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="timer"></interceptor-ref>
+				<interceptor-ref name="str"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 配置UserAction -->
+		<action name="add" class="cn.hl.action.UserAction" method="add">
+			<interceptor-ref name="myStack"></interceptor-ref>
+			<result>/index.jsp</result>
+		</action>
+2)	如果引用了自定义的拦截器（栈）则框架默认的拦截器栈（defaultStack）将不再生效，如果需要默认拦截器栈生效，则需要进行手动引入
+		<!-- 配置UserAction -->
+		<action name="add" class="cn.hl.action.UserAction" method="add">
+			<interceptor-ref name="myStack"></interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result>/index.jsp</result>
+		</action>
+3)	拦截器(栈)之间可以相互进行引用
+			<!-- 配置拦截器链 -->
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="timer"></interceptor-ref>
+				<interceptor-ref name="str"></interceptor-ref>
+				
+				<!-- 引入框架默认的拦截器栈（defaultStack） -->
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+4)	如果所有请求处理方法都应用自定义拦截器栈，可以将其设置为包内默认拦截器(栈)
+		<!-- 配置成默认的拦截器栈，包内所有Action均有效 -->
+		<default-interceptor-ref name="myStack"></default-interceptor-ref>
+		
+		<!-- 配置UserAction -->
+		<action name="add" class="cn.hl.action.UserAction" method="add">
+			<!--
+			只在当前Action中有效  
+			<interceptor-ref name="myStack"></interceptor-ref>
+			-->
+			<result>/index.jsp</result>
+		</action>
+16.5.	方法拦截器
+16.5.1.	概述
+	所谓访问拦截器就是对特定的方法进行拦截的拦截器。
+16.5.2.	实现
+【Interceptor】
+public class MtdInterceptor extends MethodFilterInterceptor{
+
+	@Override
+	protected String doIntercept(ActionInvocation invocation) throws Exception {
+		System.out.println("Method Inteceptor is do......");
+		return invocation.invoke();
+	}
+}
+【配置Interceptor】
+		<!-- 配置拦截器 -->
+		<interceptors>
+			<!-- 配置方法拦截器 -->
+			<interceptor name="shop" class="cn.hl.interceptor.MtdInterceptor">
+				<!-- 包含的方法（需要进行拦截的） -->
+				<param name="includeMethods">add,update</param>
+				<!-- 排出的方法（不需要进行拦截的） -->
+				<param name="excludeMethods">getAll,getById</param>
+			</interceptor>
+		</interceptors>
+【Action】
+public class ShopAction {
+	public String add(){
+		System.out.println("add method is do......");
+		return "success";
+	}
+	
+	public String update(){
+		System.out.println("update method is do......");
+		return "success";
+	}
+	
+	public String getAll(){
+		System.out.println("getAll method is do......");
+		return "success";
+	}
+	
+	public String getById(){
+		System.out.println("getById method is do......");
+		return "success";
+	}
+}
+16.5.3.	注意
+?	方法拦截器需要继承于MethodFilterInterceptor类
+?	配置过程中，包含和排除部分使用Action中的方法名
+16.5.4.	说明
+	方法拦截器一般使用较少，比较适合于在电商项目中使用。
+16.6.	过滤器和拦截器
+?	过滤器是通过回调函数的方式进行实现的；拦截器是通过Aop方式进行实现
+?	过滤器是属于容器的；而拦截器属于Struts2框架
+?	过滤器可以对所有的请求和响应进行拦截；而拦截器只能对Action进行拦截
