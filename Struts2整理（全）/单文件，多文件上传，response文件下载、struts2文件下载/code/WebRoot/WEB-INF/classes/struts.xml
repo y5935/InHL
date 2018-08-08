@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="upload" extends="struts-default">
+		<action name="upload1" class="cn.hl.action.UploadAction" method="upload">
+			<result>/index.jsp</result>
+		</action>
+		
+		<action name="upload2" class="cn.hl.action.UploadAction2" method="upload">
+			<result>/index.jsp</result>
+		</action>
+	</package>
+	
+	<package name="down" extends="struts-default">
+		<action name="down1" class="cn.hl.action.ResponseDownAction" method="down">
+			<!-- result结果为null，则不需要配置result -->
+		</action>
+		
+		<action name="down2" class="cn.hl.action.StrutsDownAction">
+			<!-- result的type必须配置为stream -->
+			<result type="stream">
+				<param name="contentDisposition">
+					attachment;filename=${fileName}
+				</param>
+			</result>
+		</action>
+	</package>
+</struts>

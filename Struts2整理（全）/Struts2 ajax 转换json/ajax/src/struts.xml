@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="AjaxAction" extends="struts-default" namespace="/ajax">
+		<action name="add" class="cn.hl.action.AjaxAction">
+			<!-- Ajax只能通过Response对象进行响应，不能进行页面跳转 -->
+		</action>
+	</package>
+	
+	<!-- 
+		需要继承于json-default
+		web app libraries 》》 struts2-json-plugin >> org.apache.struts.json 》》 struts-plugin
+	-->
+	<package name="JsonAction" extends="json-default" namespace="/json">
+		<action name="list" class="cn.hl.action.JsonAction" method="list">
+			<!-- result的返回值类型必须为json -->
+			<result type="json">
+				<!-- 元素的值与Action中JSONArray类型对象的名称相同 -->
+				<param name="root">json</param>
+			</result>
+		</action>
+	</package>
+</struts>

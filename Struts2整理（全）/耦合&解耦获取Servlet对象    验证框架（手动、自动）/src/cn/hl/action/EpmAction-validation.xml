@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	1、帮助文档
+	2、web app libraries  》》 xwork-core-xxx.jar 》》 xwork-validator-1.0.x.dtd
+-->
+<!DOCTYPE validators PUBLIC 
+  		"-//Apache Struts//XWork Validator 1.0.2//EN"
+  		"http://struts.apache.org/dtds/xwork-validator-1.0.2.dtd">
+  		
+<validators>
+	<field name="userName">
+		<!-- 
+			设置验证器的类型
+			web app libraries 》》 xwork-core-xxx.jar 》》 com.opensymphony.xwork2.validator.validators 》》 default.xml 
+		-->
+		<field-validator type="requiredstring">
+			<param name="trim">true</param>
+			<message>用户名不能为空</message>
+		</field-validator>
+	</field>
+	
+	<field name="age">
+		<field-validator type="int">
+			<param name="min">0</param>
+			<param name="max">180</param>
+			<message>年龄信息不合法</message>
+		</field-validator>
+	</field>
+</validators>  		

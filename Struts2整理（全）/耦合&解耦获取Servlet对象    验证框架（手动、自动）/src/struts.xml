@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="Api" extends="struts-default">
+		<action name="api1" class="cn.hl.action.ApiAction" method="api1">
+			<result>index.jsp</result>
+		</action>
+		
+		<action name="api2" class="cn.hl.action.ApiAction" method="api2">
+			<result>index.jsp</result>
+		</action>
+	</package>
+	
+	<package name="UserAction" extends="struts-default" namespace="/user">
+		<action name="reg" class="cn.hl.action.UserAction" method="reg">
+			<result>/index.jsp</result>
+			<!-- 
+				未通过验证应该跳转回reg.jsp页面
+				跳转时name必须设置为input
+			-->
+			<result name="input">/reg.jsp</result>
+		</action>
+	</package>
+	
+	<package name="EmpAction" extends ="struts-default" namespace="/emp">
+		<action name="add" class="cn.hl.action.EpmAction" method="add">
+			<result>/index.jsp</result>
+			<result name="input">/add.jsp</result>
+		</action>
+	</package>
+</struts>

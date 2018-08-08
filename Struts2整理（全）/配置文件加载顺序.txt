@@ -1,0 +1,15 @@
+default.properties	 ----struts2-core-xxx.jar
+
+* struts-default.xml	 ----struts2-core-xxx.jar
+
+* struts-plugin.xml      ----struts-Xxx-xxx.jar（struts2的插件jar包中)
+
+* struts.xml             ---- 配置Action以及常量.(******)
+
+* struts.properties      ---- 配置常量
+
+* web.xml                ---- 配置核心过滤器及常量.
+
+ 
+***** 后配置的常量会覆盖先配置的常量.
+

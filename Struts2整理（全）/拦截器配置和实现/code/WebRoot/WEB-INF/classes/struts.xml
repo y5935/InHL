@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="UserAction" extends="struts-default">
+		<!-- 配置Interceptor -->
+		<interceptors>
+			<interceptor name="timer" class="cn.hl.interceptor.TimeInterceptor"></interceptor>
+			<interceptor name="str" class="cn.hl.interceptor.StringInterceptor"></interceptor>
+			
+			<!-- 配置拦截器链 -->
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="timer"></interceptor-ref>
+				<interceptor-ref name="str"></interceptor-ref>
+				
+				<!-- 引入框架默认的拦截器栈（defaultStack） -->
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		
+		<!-- 配置成默认的拦截器栈，包内所有Action均有效 -->
+		<default-interceptor-ref name="myStack"></default-interceptor-ref>
+		
+		<!-- 配置UserAction -->
+		<action name="add" class="cn.hl.action.UserAction" method="add">
+			<!--
+			只在当前Action中有效  
+			<interceptor-ref name="myStack"></interceptor-ref>
+			-->
+			<result>/index.jsp</result>
+		</action>
+	</package>
+
+	<package name="shop" extends ="struts-default" namespace="/shop">
+		<!-- 配置拦截器 -->
+		<interceptors>
+			<!-- 配置方法拦截器 -->
+			<interceptor name="shop" class="cn.hl.interceptor.MtdInterceptor">
+				<!-- 包含的方法（需要进行拦截的） -->
+				<param name="includeMethods">add,update</param>
+				<!-- 排出的方法（不需要进行拦截的） -->
+				<param name="excludeMethods">getAll,getById</param>
+			</interceptor>
+		</interceptors>
+		
+		<default-interceptor-ref name="shop"></default-interceptor-ref>
+		
+		<!-- 配置Action -->
+		<action name="reg" class="cn.hl.action.ShopAction" method="add">
+			<result>/index.jsp</result>
+		</action>
+		
+		<action name="update" class="cn.hl.action.ShopAction" method="update">
+			<result>/index.jsp</result>
+		</action>
+
+		<action name="getAll" class="cn.hl.action.ShopAction" method="getAll">
+			<result>/index.jsp</result>
+		</action>	
+		
+		<action name="getById" class="cn.hl.action.ShopAction" method="getById">
+			<result>/index.jsp</result>
+		</action>
+	</package>
+</struts>

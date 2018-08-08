@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 
+		Java是通过包管理类的，Struts2也是通过包来管理Action的
+		通过包可以避免Action命名冲突的问题。
+		
+		name		：包的名称
+		extends		：表示继承关系。一般继承于struts-default（顶级包，struts-default.xml中）.
+		namespace	：命名空间，默认值为"/"。
+		
+		注意：设置命名空间，访问action时需要附加命名空间作为前缀。如：  conf/con.action
+	-->
+	<package name="action" extends="struts-default" namespace="/conf">
+		<!-- 定义公共的结果集 -->
+		<global-results>
+			<result name="login">/login.jsp</result>
+		</global-results>
+		
+		
+		<!-- 
+			name	：配置Action的请求处理方法的名称，调用时通过该属性值进行调用
+			class	：配置请求处理方法所在类全名(包名 + 类名)
+			method	：配置请求处理方法的名称。默认值为execute
+		-->
+		<action name="con" class="cn.hl.action.ConAction">
+			<!-- 
+				跳转控制
+				name	：请求处理结果的名称，其值与对应请求处理方法中return的值相同
+				type	：配置结果的处理方式。取值如下：
+				    chain		：表示请求链。用于从一个Action跳转到另一个Action（请求链）。如：ActionA -》ActionB
+				    dispacher	：默认值，表示请求转发，相当于Servlet中的请求转发。一般用于将结果发送给jsp页面进行渲染时使用
+				    redirect	：重定向，可以访问外部资源、jsp页面和Action。访问Action时需要加后缀名
+				    redirectAction：跳转Action，访问过程中可以使用后缀名，也可以省略后缀名
+			-->
+			<result name="success" type="redirectAction">add</result>
+		</action>
+		
+		<action name="add" class="cn.hl.action.ConAction" method="add">
+			<result>/index.jsp</result>
+		</action>
+		<action name="update" class="cn.hl.action.ConAction" method="update">
+			<result>index.jsp</result>
+		</action>
+	</package>
+	
+	<package name="pojo" extends="struts-default">
+		<action name="pojo" class="cn.hl.action.PojoAction" >
+			<result>/index.jsp</result>
+		</action>
+	</package>
+	
+	<package name="impl" extends="struts-default">
+		<action name="impl" class="cn.hl.action.InheritAction">
+			<result>/index.jsp</result>
+		</action>
+	</package>
+	
+	<package name="ext" extends = "struts-default">
+		<action name="ext" class="cn.hl.action.ExtendsAction">
+			<result>/index.jsp</result>
+		</action>
+	</package>
+</struts>

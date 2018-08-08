@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<!-- 
+		constant配置
+		配置编码格式（struts.i18n.encoding）
+		web app libraries >> struts2-core >> org.apache.struts >> default.properties
+		设置后缀名（struts.action.extension）
+		设置错误提示模式（struts.devMode）
+	-->
+	<!-- 编码格式设置 -->
+	<constant name="" value="UTF8"></constant>
+	<!-- 设置后缀名 -->
+	<constant name="struts.action.extension" value="terry,action,,"></constant>
+	<!-- 设置错误提示模式 （true：开发模式；false：运行模式）-->
+	<constant name="struts.devMode" value="false"></constant>
+	
+	<!-- 
+		引入其他配置文件
+		Struts框架允许将Action的配置定义其他文件中，然后引入其配置文件
+		在struts.xml配置文件中只定义公共的常量、变量、设置及文件的引入
+		注：引入配置文件时需要使用完整路径
+	-->
+	<include file="cn/conf/struts/Conf.xml"></include>
+	<include file="cn/conf/struts/UserAction.xml"></include>
+</struts>

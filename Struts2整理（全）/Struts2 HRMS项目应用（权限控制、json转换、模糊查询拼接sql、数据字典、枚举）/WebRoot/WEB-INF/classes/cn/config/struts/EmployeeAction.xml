@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+    "http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<package name="EmployeeAction" extends="json-default" namespace="/emp">
+		<action name="list" class="cn.hl.action.EmployeeAction" method="getAll">
+			<result type="json">
+				<param name="root">root</param>
+			</result>
+		</action>
+		
+		<action name="del" class="cn.hl.action.EmployeeAction" method="delete">
+			<result type="chain">list</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<action name="add" class="cn.hl.action.EmployeeAction" method="add">
+			<result>/index.jsp</result>
+		</action>
+		
+		<action name="find" class="cn.hl.action.EmployeeAction" method="getByExp">
+			<result type="json">
+				<param name="root">root</param>
+			</result>
+		</action>
+	</package>
+</struts>
